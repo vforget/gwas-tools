@@ -6,21 +6,21 @@ args <- commandArgs(trailingOnly = TRUE)
 # Rmpfr function to obtain arbitrary precision float
 .N <- function(.) mpfr(., precBits = 10)
 
-# FastGWA output file containing columns BETA, SE and P.
+# GWAS output file containing at minimum columns labelled BETA, SE and P.
 gwasf <- args[1] 
 
 message("Loading file")
 DT <- fread(gwasf, header=TRUE)
 
 message("Computing p-values")
-# Retain original fastGWA p-value
-DT[, P.fastGWA := P]
+# Retain original p-value
+DT[, P.old := P]
 # Set new p-value as character class, otherwise small p-values will round to 0 if numeric.
 DT[, P := NULL]
-DT[, P := as.character(P.fastGWA)]
+DT[, P := as.character(P.old)]
 
-# For fastGWA p-values that are equal to 0, use Rmpfr to obtain arbitraty precision using BETA and SE.
-DT[P.fastGWA==0, P := Rmpfr::format(exp(.N(pchisq((BETA/SE)^2, df=1, lower.tail=FALSE, log.p = TRUE))))]
+# For GWAS p-values that are equal to 0, use Rmpfr to obtain arbitraty precision using BETA and SE.
+DT[P.old==0, P := Rmpfr::format(exp(.N(pchisq((BETA/SE)^2, df=1, lower.tail=FALSE, log.p = TRUE))))]
 
 message("Writing output")
-write.table(DT, file=paste0(gwasf,".fixed"), sep="\t", quote=FALSE, row.names = FALSE)
+write.table(DT, file=paste0(gwasf,".fzp"), sep="\t", quote=FALSE, row.names = FALSE)
