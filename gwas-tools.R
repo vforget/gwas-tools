@@ -2,13 +2,14 @@ library(data.table)
 library(Rmpfr)
 
 fix.p <- function(BETA, SE){
-    Rmpfr::format(exp(.N(pchisq((BETA/SE)^2, df=1, lower.tail=FALSE, log.p = TRUE))))
+    Rmpfr::format(exp(
+               mpfr(
+                   pchisq((BETA/SE)^2, df=1, lower.tail=FALSE, log.p = TRUE),
+                   precBits = 10)
+           ))
 }
 
 args <- commandArgs(trailingOnly = TRUE)
-
-# Rmpfr function to obtain arbitrary precision float
-.N <- function(.) mpfr(., precBits = 10)
 
 # GWAS output file containing at minimum columns labelled BETA, SE and P.
 gwasf <- args[1] 
