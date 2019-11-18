@@ -1,7 +1,10 @@
 library(data.table)
 library(Rmpfr)
 
+.N <- function(.) mpfr(., precBits = 10)
+
 fix.p <- function(BETA, SE){
+    
     Rmpfr::format(exp(.N(pchisq((BETA/SE)^2, df=1, lower.tail=FALSE, log.p = TRUE))))
 }
 
