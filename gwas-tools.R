@@ -1,19 +1,12 @@
 library(data.table)
 library(Rmpfr)
 
-.N <- function(.) mpfr(., precBits = 10)
-
 fix.p <- function(BETA, SE){
-<<<<<<< HEAD:gwas-tools.R
     Rmpfr::format(exp(
                mpfr(
                    pchisq((BETA/SE)^2, df=1, lower.tail=FALSE, log.p = TRUE),
                    precBits = 10)
            ))
-=======
-    
-    Rmpfr::format(exp(.N(pchisq((BETA/SE)^2, df=1, lower.tail=FALSE, log.p = TRUE))))
->>>>>>> 0b16e392b8eb1b9ec463f48253bda3cfebe1a2a2:fix-zero-p.R
 }
 
 args <- commandArgs(trailingOnly = TRUE)
